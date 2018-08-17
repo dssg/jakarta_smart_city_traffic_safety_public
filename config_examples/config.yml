@@ -1,0 +1,9 @@
+visualization:
+    path_track_length: 10  # length of paths drawn on frames to ensure motion
+    annotation_font_scale: 1.0  # controls the size of fonts drawn on frames to ensure motion
+    vid_containers: [".mkv"]  # which file type to use for visualization
+    output_extension: ".pdf"  # output format for figures created during visualization
+
+validation:
+    iou_threshold: 0.25  # intersection over union threshold. If a true box and label have this value or greater, then they are matched for validation purposes
+    labels_we_test: ['pedestrian','bicycle','car','motorbike','bus','train','truck']  #  the labels output by the model that we want to validate

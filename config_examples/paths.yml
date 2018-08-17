@@ -1,0 +1,23 @@
+dirs:
+    # Directories containing input files
+    raw_videos: /path/to/raw/videos/  # Location of raw videos
+    scripts: /path/to/scripts/  # location for non-python scripts
+    
+    # Directories for output files
+    logs: /path/to/log/files/  # Location where log files will be placed
+    frame_stats: /path/to/frame/statistics/  # Location where frame statistics files for each file
+    packet_stats: /path/to/packet/statistics/  # Location where video packet statistics files for each file
+    subtitles: /path/to/subtitles/  # Location where video packet statistics files for each file
+    errors: /path/to/errors/  # Location where video packet statistics files for each file
+    s3_videos: /path/to/s3/bucket/  # S3 bucket where the videos will be uploaded
+    visualizations: /path/to/visualizations/  # Output directory where visualizations go
+    output_videos: /path/to/output/videos/  # Place where output videos are placed
+    output: /path/to/output/  # Place where output (not videos) is placed 
+    video_samples: /path/to/video/samples/  # output location for videos which are randomly sampled
+    downloaded_videos: /path/to/downloaded/videos/  # location where downloaded videos will be placed (those from the JSC website)
+
+
+files:
+    cameras: /path/to/camera/file.csv  # path to file which describes the cameras
+    camera_urls: /path/to/camera/urls.csv  # list of urls where footage from cameras can be downloaded (from JSC website)
+

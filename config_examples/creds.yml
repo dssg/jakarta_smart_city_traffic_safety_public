@@ -1,0 +1,26 @@
+db: 
+    user:  # user name for database
+    db_name:  # name of database
+    write_role:  # database role used for modifying database
+    read_role:  # database role used for reading from the database
+    host:  # ip address or uri for db host
+    pw:  # password for the database
+    port:  # port to access database
+
+aws:
+    ec2:
+        url:  # url for ec2 instance
+        account:  # aws account 
+        user:  # user name for database
+        pw:  # password for the database
+        access_key:  # access key 
+        secret_access_key:  # secret access key
+    s3:
+        url:  # url for s3 instance
+        bucket:  # name of bucket
+        account:  # aws account
+        user:  # user name for database
+        pw:  # password for the database
+        access_key:  # access key 
+        secret_access_key:  # secret access key
+

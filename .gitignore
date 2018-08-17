@@ -1,0 +1,20 @@
+# user specific project configurations
+config_private.yml
+
+
+# swap files created by vim
+*.swp
+
+# video files
+*.mkv
+
+# IDE files
+.Rproj.user
+.ipynb_checkpoints
+.idea
+
+# python compiled files
+*.pyc
+
+# text files
+*.txt
