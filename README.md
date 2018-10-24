@@ -23,15 +23,14 @@ For three months they learn, hone, and apply their data science, analytical, and
 
 #### Partners: Jakarta Smart City and Pulse Lab Jakarta
 
-TODO: Update this image and host in our repo
 <p float="left">
-  <img src ="http://smartcity.jakarta.go.id/assets/img/logo.png" alt="alt text" width="288" height="99" />
-  <img src="https://www.unglobalpulse.org/sites/default/files/Pulse%20Lab%20Jakarta%20Logo_with%20Pulsars.png" alt="alt text" width = "318" height="81" />
+  <img src ="resources/images/jakarta_smart_city_logo.png" alt="alt text" width="288" height="99" />
+  <img src="resources/images/Pulse_Lab_Jakarta_logo_with_pulsars.png" alt="alt text" width = "318" height="81" />
 </p> 
 
-Jakarta Smart City (JSC) is a government initiative to develop a multi-use, crowdsourced, big data platform to close the digital divide and facilitate data transparency and citizen communication with government officials in Jakarta. The initiative includes a website, smartcity.jakarta.go.id, as well as eight (8) citizen complaints channel, such as Qlue, LAPOR!, Balai Warga, popular social media, SMS platform, and e-mail, and CROP Jakarta for civil servants and officials. The partner’s website, smartcity.jakarta.go.id,  uses the Google Maps engine and data from the traffic application Waze. 
+Jakarta Smart City (JSC) is a government initiative to develop a multi-use, crowdsourced, big data platform to close the digital divide and facilitate data transparency and citizen communication with government officials in Jakarta. The initiative includes a website, [https://smartcity.jakarta.go.id](smartcity.jakarta.go.id), as well as eight (8) citizen complaint channels, such as Qlue, LAPOR!, Balai Warga, popular social media, SMS platform, and e-mail, and CROP Jakarta for civil servants and officials. smartcity.jakarta.go.id uses the Google Maps engine and data from the traffic application Waze. 
 
-United Nations Global Pulse is an organization in the United Nations system that focuses on harnessing big data, artificial intelligence, and other emerging technologies for sustainable development and humanitarian action. It is headquartered in New York City, with additional Pulse Labs in Jakarta, Indonesia and Kampala, Uganda. Global Pulse aims to bring together a wide range of stakeholders (academia, agencies, local governments, etc.) to utilize Big Data in support of the UN’s broader development goals.  
+United Nations Global Pulse is an organization in the United Nations system that focuses on harnessing big data, artificial intelligence, and other emerging technologies for sustainable development and humanitarian action. It is headquartered in New York City, with additional Pulse Labs in Jakarta, Indonesia and Kampala, Uganda. Global Pulse aims to bring together a wide range of stakeholders (academia, agencies, local governments, etc.) to use Big Data in support of the UN’s broader development goals. 
 
 #### Code Base
 
@@ -41,11 +40,10 @@ This repository is a collection of Jupyter Notebooks, Python scripts and a strea
 
 Conceptually, the stream processing system is organized into tasks, workers, and queues:
 * Task: An operation to be performed on an item of interest (in our case, video frames). Operations should be more-or-less atomic, meaning applying the operation to a particular item is independent of the operation to other items. 
-* Worker: What actually performs tasks on items of interest
+* Worker: What actually performs tasks on items of interest.
 * Queue: A First in, First out asynchronous queue which contain items. Workers pull from and place into these queues as defined in the pipeline definition file. 
 
-TODO: replace with image hosted in repo
-![Pipeline](https://s8.postimg.cc/uwp5b4xol/Pipeline_Concept.png)
+![Pipeline](resources/images/pipeline_concept.png)
 
 Programmatically, tasks are implicitly defined by a Worker which performs that task. In other words, to define a new task, one should write a new class which subclasses the PipelineWorker class found in `project_root/src/modules/pipeline/workers/pipeline_worker.py`
 
@@ -55,26 +53,25 @@ Below we detail the hardware, software, computing environment, and external serv
 
 #### Hardware
 
-To make full use of python multiprocessing, a multicore processor is a good idea. Because videos and model weights data take up a large amount of space in memory we recommend at least 16GB or 32GB of RAM. 
+To make full use of python multiprocessing, a multicore processor is a good idea. Because videos and model weights data take a large amount memory, we recommend at least 16GB or 32GB of RAM. 
 This project makes use of General Purpose GPU computing, so a GPU is highly recommended. The Tensorflow and PyTorch models can be run without GPU support, but this drastically decreases computation speed. Instructions on how to operate each framework with no GPU can be found in their respective documentation.
 
 
 #### Software
 
-* This project requires [Python 3.6](https://www.python.org/downloads/) or later, with packages as specified in requirements.txt. If you have pip installed, packages can be installed by running `pip install -r requirements.txt`.
-* [CUDA](https://developer.nvidia.com/cuda-zone), We used version V9.0.176, this is for making use of GPU's
-* [Tensorflow](https://www.tensorflow.org/): We used version 1.8.0, this was used to run some pre-trained models in our pipeline
-* [PyTorch](https://pytorch.org/): We used version 0.4.0, this was used to run some pre-trained models in our pipeline
-* [OpenCV](https://opencv.org/): We used version 3.4.2, this was used to draw annotated boxes and points on video frames and for running the Lucas-Kanade Motion Detection Algorithm
-* [ffmpeg](https://www.ffmpeg.org/): We used version 2.8.14, this was used to read, write, and analyze streams of video files
-* [PostgreSQL](https://www.postgresql.org/): We used version 9.5.10, this was used to store non-video data for both inputs and outputs to the model. You should also have the command line executable, psql.
-* [Docker](https://www.docker.com/): We used version 17.12.1-ce, build 7390fc6, this was used for running a docker container which contains:
+* This project requires [Python 3.6](https://www.python.org/downloads/) or later, with packages as specified in `requirements.txt`. If you have pip installed, packages can be installed by running `pip install -r requirements.txt`.
+* [CUDA](https://developer.nvidia.com/cuda-zone) for using GPUs. We used version V9.0.176.
+* [Tensorflow](https://www.tensorflow.org/) for running pre-trained models in our pipeline. We used version 1.8.0.
+* [PyTorch](https://pytorch.org/) for running pre-trained models in our pipeline. We used version 0.4.0.
+* [OpenCV](https://opencv.org/) for drawing annotated boxes and points on video frames and for running the Lucas-Kanade Motio Detection Algorithm. We used version 3.4.2.
+* [ffmpeg](https://www.ffmpeg.org/) for reading, writing, and analyzing streams of video files. We used version 2.8.14.
+* [PostgreSQL](https://www.postgresql.org/) for storing non-video data for inputs and outputs to the model. We used version 9.5.10. You should have the command line executable, psql.
 * [Computer Vision Annotation Tool (CVAT)](https://github.com/opencv/cvat): We used version 0.1.1. Instructions on installing and running CVAT can be found on their website.
+* [Docker](https://www.docker.com/) for running a docker container that contains CVAT. We used version 17.12.1-ce, build 7390fc6.
 
 #### Other Services
 
-* Some code in this repository interacts with [Amazon AWS S3](https://aws.amazon.com/s3/) buckets, though this functionality is not central to any of the main functions of this repository
-
+* Some code in this repository interacts with [Amazon AWS S3](https://aws.amazon.com/s3/) buckets, though this functionality is not central to any of the main functions of this repository.
 
 
 #### Environment Variables
@@ -85,7 +82,7 @@ The following environment variables should be set:
 
 #### Configuration Files
 
-Many system specificcation such as model parameters and file paths are contained in `YAML` configuration files found in `project_root/config`. During setup, our system reads all files with `.yml` or `.yaml` extensions in that directory and combines them into a single configuration object. This allows flexibility in organization config files.
+Many system specifications such as model parameters and file paths are contained in `YAML` configuration files found in `project_root/config`. During setup, our system reads all the files with `.yml` or `.yaml` extensions in that directory and combines them into a single configuration object. This allows flexibility in organizing config files.
 
 We recommend using four separate config files: 
 * `config.yml` contains general configuration options.
@@ -123,7 +120,7 @@ Note: This step should be completed before the pipeline can be run.
 
 #### Uploading files to an S3 Bucket
 
-For long term storage, raw videos can be uploaded to an S3 bucket by running:
+For long-term storage, raw videos can be uploaded to an S3 bucket by running:
 
 `python src/main/upload_videos_to_s3.py`
 
@@ -166,11 +163,11 @@ This also has information on how to set up Annotation Jobs. In our work, we crea
 
 ```car ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false pedestrian ~checkbox=on_road:false bicycle ~checkbox=going_the_wrong_way:false motorbike ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false ~checkbox=on_sidewalk:false @checkbox=more_than_two_people:false bus ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false truck ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false @checkbox=heavy_truck:false minibus_van_angkot ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false train tuktuk_motortrike_bajaj ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false food_cart_or_street_vendor ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false other_interesting_event @text=please_describe:```
 
-We created a cvat docker container called `cvat` which houses the contents
+We created a cvat docker container called `cvat` that houses the contents.
 
 We additionally provide a quickstart guide for how to label videos in CVAT <a href = "https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/dev/test/video%20annotation/video_annotation_guide.md">here</a>.
 
-#### Moving CVAT Annotations from the CVAT Docker Container into the PostgreSQL Databse
+#### Moving CVAT Annotations from the CVAT Docker Container into the PostgreSQL Database
 
 CVAT Annotations are contained in a separate database within the CVAT Docker container. Here is how to extract them and pass
 
@@ -182,7 +179,7 @@ To retrieve the file from the docker container run the following from outside th
 
 `docker cp cvat_db:/cvat.dump .`
 
-Then you can upload the data to the PostgreSQL database using:
+Then you can upload the data to your persistent PostgreSQL database using:
 
 `cat cvat.dump | psql -f -`
 
