@@ -1,16 +1,16 @@
 # Improving Traffic Safety through (Traffic) Video Analysis
 
-This repository that contains the code necessary to replicate the work done by fellows at the University of Chicago's <a href="https://dssg.uchicago.edu/">Data Science for Social Good (DSSG) </a> 2018 summer fellowship. In partnership with Jakarta Smart City (JSC) and United Nations Global Pulse (UNGP), DSSG developed a pipeline that can be used to analyze traffic videos taken from Jakarta's vast network of CCTV cameras. The pipeline is able to ingest a video, perform a range of computer vision techniques (object detection, object classification, optical flow), and output the results to a PostgreSQL database. This repository allows users to download all of the files necessary to build and launch the pipeline, and customize it as necessary. We also include some other tools related to extracting video metadata, randomly sampling segments from clean videos, and evaluationg the performance of various model components.  
+This repository that contains the code necessary to replicate the work done by fellows at the University of Chicago's <a href="https://dssg.uchicago.edu/">Data Science for Social Good (DSSG) </a> 2018 summer fellowship. In partnership with Jakarta Smart City (JSC) and United Nations Global Pulse (UNGP), DSSG developed a pipeline that can be used to analyze traffic videos taken from Jakarta's vast network of CCTV cameras. The pipeline is able to ingest a video, perform a range of computer vision techniques (object detection, object classification, optical flow), and output the results to a PostgreSQL database. This repository allows users to download all of the files necessary to build and launch the pipeline, and customize it as necessary. We also include some other tools related to extracting video metadata, randomly sampling segments from clean videos, and evaluating the performance of various model components.  
 
 ## Table of Contents
 
-1. [Introduction](https://github.com/dssg/jakarta_smart_city_traffic_safety/tree/dev#introduction)
-2. [Setup](https://github.com/dssg/jakarta_smart_city_traffic_safety/tree/dev#setup)
-3. [Modules Outside the Pipeline](https://github.com/dssg/jakarta_smart_city_traffic_safety/tree/dev#modules-outside-the-pipeline)
-4. [Modules Inside the Pipeline](https://github.com/dssg/jakarta_smart_city_traffic_safety/tree/dev#modules-inside-the-pipeline)
-5. [Testing the Pipeline](https://github.com/dssg/jakarta_smart_city_traffic_safety/tree/dev#testing-the-pipeline)
-6. [Suggested Workflow](https://github.com/dssg/jakarta_smart_city_traffic_safety/tree/dev#suggested-workflow)
-7. [Contributors](https://github.com/dssg/jakarta_smart_city_traffic_safety/tree/dev#contributors)
+1. [Introduction](https://github.com/dssg/jakarta_smart_city_traffic_safety#introduction)
+2. [Setup](https://github.com/dssg/jakarta_smart_city_traffic_safety#setup)
+3. [Non-Pipeline Functionality](https://github.com/dssg/jakarta_smart_city_traffic_safety#non-pipeline-functionality)
+4. [Pipeline Functionality](https://github.com/dssg/jakarta_smart_city_traffic_safety#pipeline-functionality)
+5. [Testing the Pipeline](https://github.com/dssg/jakarta_smart_city_traffic_safety#testing-the-pipeline)
+6. [Workflows](https://github.com/dssg/jakarta_smart_city_traffic_safety#workflows)
+7. [Contributors](https://github.com/dssg/jakarta_smart_city_traffic_safety#contributors)
 
 ## Introduction
 
@@ -28,9 +28,10 @@ For three months they learn, hone, and apply their data science, analytical, and
   <img src="resources/images/Pulse_Lab_Jakarta_logo_with_pulsars.png" alt="alt text" width = "318" height="81" />
 </p> 
 
-Jakarta Smart City (JSC) is a government initiative to develop a multi-use, crowdsourced, big data platform to close the digital divide and facilitate data transparency and citizen communication with government officials in Jakarta. The initiative includes a website, [https://smartcity.jakarta.go.id](smartcity.jakarta.go.id), as well as eight (8) citizen complaint channels, such as Qlue, LAPOR!, Balai Warga, popular social media, SMS platform, and e-mail, and CROP Jakarta for civil servants and officials. smartcity.jakarta.go.id uses the Google Maps engine and data from the traffic application Waze. 
+Jakarta Smart City (JSC) is a government initiative to develop a multi-use, crowdsourced, big data platform to close the digital divide and facilitate data transparency and citizen communication with government officials in Jakarta. The initiative includes a website, [https://smartcity.jakarta.go.id](smartcity.jakarta.go.id), as well as eight (8) citizen complaint channels, such as Qlue, LAPOR!, Balai Warga, popular social media, SMS platform, and e-mail, and CROP Jakarta for civil servants and officials. 
+smartcity.jakarta.go.id uses the Google Maps engine and data from the traffic application Waze. 
 
-United Nations Global Pulse is an organization in the United Nations system that focuses on harnessing big data, artificial intelligence, and other emerging technologies for sustainable development and humanitarian action. It is headquartered in New York City, with additional Pulse Labs in Jakarta, Indonesia and Kampala, Uganda. Global Pulse aims to bring together a wide range of stakeholders (academia, agencies, local governments, etc.) to use Big Data in support of the UN’s broader development goals. 
+United Nations Global Pulse is an organization in the United Nations system that focuses on harnessing big data, artificial intelligence, and other emerging technologies for sustainable development and humanitarian action. It is headquartered in New York City, with additional Pulse Labs in Jakarta, Indonesia and Kampala, Uganda. Global Pulse aims to bring together a wide range of stakeholders (academia, agencies, local governments, etc.) to use Big Data in support of the UN’s broader development goals.  
 
 #### Code Base
 
@@ -74,6 +75,7 @@ This project makes use of General Purpose GPU computing, so a GPU is highly reco
 * Some code in this repository interacts with [Amazon AWS S3](https://aws.amazon.com/s3/) buckets, though this functionality is not central to any of the main functions of this repository.
 
 
+
 #### Environment Variables
 The following environment variables should be set:
 
@@ -85,7 +87,7 @@ The following environment variables should be set:
 Many system specifications such as model parameters and file paths are contained in `YAML` configuration files found in `project_root/config`. During setup, our system reads all the files with `.yml` or `.yaml` extensions in that directory and combines them into a single configuration object. This allows flexibility in organizing config files.
 
 We recommend using four separate config files: 
-* `config.yml` contains general configuration options.
+* `config.yml` contains general configuration options, including validation parameters.
 * `creds.yml` contains credentials necessary for accessing the PostgreSQL database and Amazon AWS services.
 * `paths.yml` contains relevant file paths for input and output files.
 * `pipeline.yml` defines that pipeline that should be run.
@@ -126,17 +128,23 @@ For long-term storage, raw videos can be uploaded to an S3 bucket by running:
 
 #### Downloading New Videos
 
-New videos can be downloaded from Jakarta's Open Data Portal, and we provide a Python script that automates this process. There are hundreds of CCTV cameras posted around the city, and users can watch both live streams or streams going back approximately 48 hours. We provide a script that allows a user to specify which cameras they would like to download video from, as well as the amount of video they would like to download. The script currently retrieves the current timestamp, and searches for videos in the previous 48 hours.
+New videos can be downloaded from Jakarta's Open Data Portal. We provide a Python script that automates this process. There are hundreds of CCTV cameras posted around the city, and users can watch both live streams or streams going back approximately 48 hours. The script allows a user to specify which cameras they would like to download video from, as well as the amount of video they would like to download. The script retrieves the current timestamp, and searches for videos in the previous 48 hours.
 
 To run this script:
 
 `python src/main/download_videos_from_web_portal.py`
 
-The resulting files are in `.mp4` format and placed in the directory specified by`conf>dirs>downloaded_videos`.
+The resulting files are in `.mp4` format and placed in the directory specified by`conf>dirs>downloaded_videos`. Note these videos will not have subtitles.
+
+#### Assessing video quality
+
+When starting to work with the videos, it might be important to assess their quality. One simple check one might want to start with is to plot how consistent the frame rate of the videos is. We found that the CCTV video often has dropped frames, which lead to a drop in the average frame rate. An example of how to perform this check can be found in [`resources/video_quality_tests/average_fps.ipynb`](https://github.com/dssg/jakarta_smart_city_traffic_safety/tree/master/resources/video_quality_tests/average_fps.ipynb), using the frame statistics extracted above.
+
+In videos with framerates below 25 fps, we noted that whenever frames were dropped, they were glued together with a time between frames that was either the time with no frames (if that was on the order of a few seconds), or 0.04s as if the video framerate was 25 fps. Therefore we provide functions that will detect segments with no dropped frames, by detecting if the spacing between frames is smaller or larger than expected. This provided completely clean segments for at least two of the cameras used in this work. The function can be found in [`resources/video_quality_tests/frame_spacings.ipynb`](https://github.com/dssg/jakarta_smart_city_traffic_safety/tree/master/resources/video_quality_tests/frame_spacings.ipynb).
 
 #### Sampling and Chunking Videos
 
-You may want to randomly sample videos from different cameras, times, and locations in order to evaluate the pipeline's performance under a variety of circumstances. There are multiple scripts which can be used for this:
+You may want to randomly sample videos from different cameras, times, and locations in order to evaluate the pipeline's performance under a variety of circumstances. There are multiple scripts which can be used for this.
 
 We opted to run validation only on clean segments of video. The following script identifies clean segments using the subtitle files found in `conf>dirs>subtitles` and places the resulting list of clean segments in `conf>dirs>video_samples`:
 
@@ -146,7 +154,7 @@ Once clean segments have been identified, we identify a random sample from those
 
 `python src/main/sample_from_contiguous_segments.py`
 
-The output file is placed in `conf>dirs>video_samples`. To extract the video segments described in this files, you can run:
+The output file is placed in `conf>dirs>video_samples`. This file is also used to read information about the segments when validating. To extract the video segments described in this files, you can run:
 
 `python src/main/extract_video_samples_from_videos.py`
 
@@ -155,23 +163,23 @@ which will produce sample files contained in `conf>dirs>video_samples`.
 
 #### Video Annotation
 
-Labeling is an important part of any machine learning application. Because this pipeline is centered around object detection, classification, and motion determination, there are several outputs that benefit from validation tools. We use the Computer Vision Annotation Tool (CVAT) which allows a user to validate all of these outputs. The tool allows users to label video segments by providing bounding boxes, class labels, and trajectories to each object in a video. The results of this labeling are placed to a table, and can be compared against the results of the pipeline.
+Labeling is an important part of any machine learning application. Because this pipeline is centered around object detection, classification, and motion determination, there are several outputs that benefit from validation tools. We use the Computer Vision Annotation Tool (CVAT), which enables a user to validate all of these outputs. With the tool, users can add bounding boxes, class labels, and trajectories to each object in a video. The results of this labeling are placed in a table, and provide a ground truth to select models and assess their performance.
 
 To download and setup CVAT, see the original documentation <a href = "https://github.com/opencv/cvat/blob/e8b2c4033022902a7be856583fe98b5fe7e0cb4b/cvat/apps/documentation/user_guide.md">here.</a>
 
 This also has information on how to set up Annotation Jobs. In our work, we created a separate job for each video segment. Also, here is the string we used for creating video labels:
 
-```car ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false pedestrian ~checkbox=on_road:false bicycle ~checkbox=going_the_wrong_way:false motorbike ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false ~checkbox=on_sidewalk:false @checkbox=more_than_two_people:false bus ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false truck ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false @checkbox=heavy_truck:false minibus_van_angkot ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false train tuktuk_motortrike_bajaj ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false food_cart_or_street_vendor ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false other_interesting_event @text=please_describe:```
+```car ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false pedestrian ~checkbox=on_road:false bicycle ~checkbox=going_the_wrong_way:false motorbike ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false ~checkbox=on_sidewalk:false @checkbox=more_than_two_people:false bus ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false truck ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false @checkbox=heavy_truck:false minibus_van_angkot ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false train tuktuk_motortrike_bajaj ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false food_cart_or_street_vendor ~checkbox=stopped_on_road:false ~checkbox=going_the_wrong_way:false other_interesting_event @text=please_describe:""```
 
-We created a cvat docker container called `cvat` that houses the contents.
+Running the `docker-compose` command as documented in the CVAT repo creates a cvat docker container called `cvat` which houses the contents of the annotation tool, as well as two auxiliary containers: `cvat_db` and `cvat_redis`.
 
-We additionally provide a quickstart guide for how to label videos in CVAT <a href = "https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/dev/test/video%20annotation/video_annotation_guide.md">here</a>.
+We additionally provide a quickstart guide for how to label videos in CVAT <a href = "https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/master/resources/video%20annotation/video_annotation_guide.md">here</a>.
 
 #### Moving CVAT Annotations from the CVAT Docker Container into the PostgreSQL Database
 
-CVAT Annotations are contained in a separate database within the CVAT Docker container. Here is how to extract them and pass
+CVAT Annotations are contained in a separate database within the CVAT Docker container. Here is how to extract them and store them in your database.
 
-While inside the docker container, run the following command to generate a database dump:
+While inside the `cvat_db` docker container, run the following command to generate a database dump:
 
 `pg_dump -h localhost -U postgres -d cvat -n public --no-owner -f cvat.dump`
 
@@ -189,6 +197,23 @@ To perform validation, we create derived tables from the CVAT output, by running
 
 The labeled information is now ready for validation!
 
+#### Validating the model
+
+After the pipeline has been run with some parameters, many plots useful for model validation can be generated by running
+
+`python src/main/precision_recall.py`
+
+The plots will be placed in the folder `conf>dirs>pr_curves` in the config files. The script will generate plots for each separate video chunk, aggregate videos from the same camera (all, all day videos, and all night videos), then all day and all night videos, and finally all videos together. 
+
+You can also change which models will be tested by changing the `conf>validation>model_numbers` list in the config files. Other parameters that should be changed as the models are further examined are:
+* The IOU threshold above which two boxes will be matched (`conf>validation>iou_threshold`),
+* How much of the top of the image that will be disregarded when validating (`conf>validation>disregard_region`),
+* What is the minimum motion detected for angle comparison (`conf>validation>minimum_motion`).
+
+#### Finding events of interest
+
+After running the pipeline on some videos, you might want to find when specific types of events happen in the footage, such as when cars are found coming the wrong way down a specific stretch of road. This can be done either using the results of the semantic segmentation or by defining the regions of interest by hand. An example of how to find such events can be found in [`resources/find_events.ipynb`](https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/master/resources/find_events.ipynb).
+
 ## Pipeline Functionality
 
 The pipeline contains several worker processes that perform the various tasks needed to analyze raw videos. In this section, we list the workers that are built into the pipeline, and describe their functionality. This list of modules is not exhaustive, and users can easily plug in new workers as necessary. These workers are listed in workers_list.py. Currently, the workers include the following:
@@ -205,41 +230,41 @@ The pipeline contains several worker processes that perform the various tasks ne
 
 #### Write Frames to Video Files
 
-This module is contained in <a href = "https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/dev/src/modules/pipeline/workers/write_frames_to_vid_files.py">write_frames_to_vid_files.py.</a> The worker takes in a series of frames, and outputs a video. The user may specify how many frames they would like to concatenate. This worker will generally be called at a point following one of the other tasks. For instance, this may be called after running the object detector, so that the user can see the results of the bounding boxes and classifications.
+This module is contained in <a href = "https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/master/src/modules/pipeline/workers/write_frames_to_vid_files.py">write_frames_to_vid_files.py.</a> The worker takes in a series of frames, and outputs a video. The user may specify how many frames they would like to concatenate. This worker will generally be called at a point following one of the other tasks. For instance, this may be called after running the object detector, so that the user can see the results of the bounding boxes and classifications.
 
 #### Read Frames From Video Files
 
-This module is contained in <a href = "https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/dev/src/modules/pipeline/workers/read_frames_from_vid_files_in_dir.py">read_frames_from_vid_files_in_dir.py. </a> This module breaks up a video into frames, that can then be passed to the rest of the workers. Generally, this worker should come at the beginning of the pipeline, as the output of this worker is necessary as the inputs for the rest of the workers.
+This module is contained in <a href = "https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/master/src/modules/pipeline/workers/read_frames_from_vid_files_in_dir.py">read_frames_from_vid_files_in_dir.py. </a> This module breaks up a video into frames, that can then be passed to the rest of the workers. Generally, this worker should come at the beginning of the pipeline, as the output of this worker is necessary as the inputs for the rest of the workers.
 
 #### YOLO3 Object Detection
 
-This module is contained in <a href = "https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/dev/src/modules/pipeline/workers/yolo3_detect.py">yolo3_detect.py.</a>  It provides the core method we deploy for object detection and classification, and is derived from <a href = "https://pjreddie.com/media/files/papers/YOLOv3.pdf">YOLOv3: An Incremental Approach</a> by Joseph Redmon and Ali Farhadi. The main advantage of YOLO is that it runs quickly, and was trained on a fairly extensive dataset. One drawback to its application in Jakarta is that there are objects that are specific to Jakarta and do not appear in the YOLO training set. We provide tools to help overcome this issue by allowing the user to collect labeled data for these more rare events, and therefore retrain YOLO to improve its performance in specific contexts. This worker outputs a dictionary containing frame number, bounding box dimensions, and an object's predicted classification.
+This module is contained in <a href = "https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/master/src/modules/pipeline/workers/yolo3_detect.py">yolo3_detect.py.</a>  It provides the core method we deploy for object detection and classification, and is derived from <a href = "https://pjreddie.com/media/files/papers/YOLOv3.pdf">YOLOv3: An Incremental Approach</a> by Joseph Redmon and Ali Farhadi. The main advantage of YOLO is that it runs quickly, and was trained on a fairly extensive dataset. One drawback to its application in Jakarta is that there are objects that are specific to Jakarta and do not appear in the YOLO training set. We provide tools to help overcome this issue by allowing the user to collect labeled data for these more rare events, and therefore retrain YOLO to improve its performance in specific contexts. This worker outputs a dictionary containing frame number, bounding box dimensions, and an object's predicted classification.
 
 To run this worker, you need the YOLO weights found [here](https://pjreddie.com/media/files/yolov3.weights).
 
 #### Lucas-Kanade Sparse Optical Flow
 
-This module is contained in <a href = "https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/dev/src/modules/pipeline/workers/lk_sparse_optical_flow.py">lk_sparse_optical_flow.py.</a> This module implements the Lucas-Kanade algorithm to calculate the optical flow for detected corners in objects. The Lucas-Kanade algorithm solves a linear system in the neighborhood of a point to calculate the "flow" from one frame to the next. The output from this method returns a list of arrays containing the vectors for optical flows of the various detected points.
+This module is contained in <a href = "https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/master/src/modules/pipeline/workers/lk_sparse_optical_flow.py">lk_sparse_optical_flow.py.</a> This module implements the Lucas-Kanade algorithm to calculate the optical flow for detected corners in objects. The Lucas-Kanade algorithm solves a linear system in the neighborhood of a point to calculate the "flow" from one frame to the next. The output from this method returns a list of arrays containing the vectors for optical flows of the various detected points.
 
 #### Compute Frame Statistics
 
-This module is contained in <a href = "https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/dev/src/modules/pipeline/workers/compute_frame_stats.py">compute_frame_stats.py.</a> It takes the boxes and predicted classes output by the YOLO3 module. It allows the user to return values that count the number of each type of object in a frame, as well as the associated confidence scores.
+This module is contained in <a href = "https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/master/src/modules/pipeline/workers/compute_frame_stats.py">compute_frame_stats.py.</a> It takes the boxes and predicted classes output by the YOLO3 module. It allows the user to return values that count the number of each type of object in a frame, as well as the associated confidence scores.
 
 #### Write Keys to Flat Files
 
-This module is contained in <a href ="https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/dev/src/modules/pipeline/workers/write_keys_to_files.py">write_keys_to_files.py</a> It takes as its input the outputs from previous steps, and returns a csv with the relevant outputs.
+This module is contained in <a href ="https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/master/src/modules/pipeline/workers/write_keys_to_files.py">write_keys_to_files.py</a>. It takes as its input the outputs from previous steps, and returns a csv with the relevant outputs.
 
 #### Write Keys to Database
 
-This module is contained in  <a href ="https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/dev/src/modules/pipeline/workers/write_keys_to_database_table.py">write_keys_to_database_table.py.</a> This module works similarly to the flat files one, except it outputs its results to a postgres database instead of a csv.
+This module is contained in <a href ="https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/master/src/modules/pipeline/workers/write_keys_to_database_table.py">write_keys_to_database_table.py</a>. This module works similarly to the flat files one, except it outputs its results to a postgres database instead of a csv.
 
 #### Mean Motion Direction
 
-This module is contained in <a href ="https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/dev/src/modules/pipeline/workers/write_keys_to_files.py">"mean_motion_direction.py."</a> It takes the output from the LK Sparse Optical Flow and the boxes from YOLO3 as its inputs. It matches the optical flow points to their corresponding boxes, and returns an average displacement vector for that box. It also returns the magnitude of the displacement, and its angle. These two measures can be used for validation purposes.
+This module is contained in <a href ="https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/master/src/modules/pipeline/workers/write_keys_to_files.py">mean_motion_direction.py</a>. It takes the output from the LK Sparse Optical Flow and the boxes from YOLO3 as its inputs. It matches the optical flow points to their corresponding boxes, and returns an average displacement vector for that box. It also returns the magnitude of the displacement, and its angle. These two measures can be used for validation purposes.
 
 #### Semantic Segmenter
 
-We used the <a href ="https://github.com/mapillary/inplace_abn#mapillary-vistas-pre-trained-model">"WideResNet38 + DeepLab3 pre-trained algorithm"</a> to classify each pixel into particular classes(road, sidewalk, e.t.c). This will help us to identify different image regions so we can then say things like " the motorcycle is on the sidewalk". Semantic segmentation is an expensive process to run, it takes some time to classify each pixel and then turn it into a mask. In our case, we have static cameras and regions such as road and sidewalks (which we are interested in) do not change as often so we will performthis process seldomly and store the masks into the database.This module is contained in <a href ="https://github.com/mapillary/inplace_abn#mapillary-vistas-pre-trained-model">"WideResNet38 + DeepLab3 pre-trained algorithm"</a>
+We used the <a href ="https://github.com/mapillary/inplace_abn#mapillary-vistas-pre-trained-model">WideResNet38 + DeepLab3 pre-trained algorithm</a> to classify each pixel into particular classes (road, sidewalk, etc.). This helps us identify different image regions so we can then say things like "the motorcycle is on the sidewalk". Semantic segmentation is an expensive process to run; it takes some time to classify each pixel and then turn it into a mask. In our case, we have static cameras and regions such as road and sidewalks (which we are interested in) do not change as often so we will perform this process seldomly and store the masks into the database. 
 
 ## Testing the pipeline
 
@@ -266,11 +291,14 @@ Note: Running the pipeline requires that the database contain metadata for all v
 4. Move annotations from the CVAT docker container to the PostgreSQL database
 
 #### Generate Semantic Segmentation
-1. 
-2. 
+1. Getting the median image for foreground subtraction. An example of how do so can be found in [resources/semantic_seg/median_cameras.ipynb](https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/master/resources/semantic_seg/median_cameras.ipynb). We have found good results by sampling one frame per second for 100-300 seconds from relatively calm times such as weekend mornings.
+2. In order to perform Semantic Segmentation on the images you need to firstly run the [requirements.txt](https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/master/resources/semantic_seg/requirements.txt) file to install all dependencies using pip including pytorch. Place the images into the /resources/semantic_seg/input/ folder, [download weights](https://github.com/dssg/jakarta_smart_city_traffic_safety/tree/master/resources/semantic_seg#mapillary-vistas-pre-trained-model) and then run `python test_vistas.py`.
+
 
 #### Validate the Pipeline
-1.
+1. Run the scripts to assess the performance of the models used.
+2. Look at images containing predicted and annotated boxes in order to better understand where models are working and failing. An example notebook to do this is contained in [`resources/validation_image_comparison.ipynb`](https://github.com/dssg/jakarta_smart_city_traffic_safety/blob/master/resources/validation_image_comparison.ipynb).
+3. Change parameters and test some more!
 
 The particular methods included in each of these steps are detailed above.
 
@@ -280,7 +308,7 @@ Most main executable scripts in this repository produce log files for auditing p
 
 ## Fine Tuning
 
-In our work, due to the paucity of labeled traffic footage from Jakarta roads, we used a pretrained model to perform object detection. Naturally, we might desire to fine tune such models for classes that are specific to jakarta. Currently, fine tuning of object classification models exists in THIS repository, but there exist many resources which explain the process, such as [here](http://wiki.fast.ai/index.php/Fine_tuning) or [here](http://blog.revolutionanalytics.com/2016/08/deep-learning-part-2.html)
+In our work, due to the paucity of labeled traffic footage from Jakarta roads, we used a pretrained model to perform object detection. Naturally, we might desire to fine tune such models for classes that are specific to Jakarta. Currently, fine tuning of object classification models is not implemented in this repository, but many resources exist that explain the process, such as [here](http://wiki.fast.ai/index.php/Fine_tuning) or [here](http://blog.revolutionanalytics.com/2016/08/deep-learning-part-2.html).
 
 ## Contributors
 

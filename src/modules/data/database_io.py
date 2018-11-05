@@ -523,6 +523,16 @@ class DatabaseIO:
         sql = 'set role {}; '.format(self.write_role) \
             + f"SELECT id, site_name FROM raw.cameras WHERE site_name = '{camera_name}'"
         return sql
+    
+    @RunSqlSelect
+    def get_camera_list(self):
+        """Get a list of cameras.
+
+        :return: sql statement which gets run on the database
+        """
+        sql = 'set role {}; '.format(self.write_role) \
+            + f"SELECT site_name FROM raw.cameras"
+        return sql
 
     @RunSqlSelect
     def _get_video_info(self, file_name):
@@ -566,9 +576,15 @@ class DatabaseIO:
             + f"SELECT * FROM validation.cvat_frames_interpmotion " \
             + f"WHERE name = '{file_name}'; "
         return sql
+    
+    @RunSqlSelect
+    def get_annotated_video_list(self):
+        sql = f"SET role {self.write_role}; " \
+            + f"SELECT DISTINCT name FROM validation.cvat_frames_interpmotion;"
+        return sql
 
     @RunSqlSelect
-    def get_results_boxes(self, file_name, model_no):
+    def get_results_boxes(self, model_no, file_name):
         """Gets all boxes from the results.boxes table
 
         Note: schema and table are hard coded, so if that changes, this should change as well
@@ -583,16 +599,18 @@ class DatabaseIO:
         return sql
     
     @RunSqlSelect
-    def get_results_motion(self, file_name, model_no):
+    def get_results_motion(self, model_no, file_name):
         sql = f"SET role {self.write_role}; " \
-            + f"WITH foo as (" \
+            + f"WITH foo as ( " \
             + f"SELECT * FROM results.boxes " \
-            + f"WHERE video_file_name = '{file_name}' and model_number = '{model_no}')" \
-            + f"SELECT foo.*, " \
-            + f"results.box_motion.mean_delta_x, results.box_motion.mean_delta_y, results.box_motion.magnitude " \
+            + f"WHERE video_file_name = '{file_name}' and model_number = '{model_no}')," \
+            + f"foo_mot as ( " \
+            + f"SELECT mean_delta_x, mean_delta_y, magnitude, box_id, model_number from results.box_motion " \
+            + f"WHERE video_file_name = '{file_name}' and model_number = '{model_no}') " \
+            + f"SELECT foo.*, foo_mot.mean_delta_x, foo_mot.mean_delta_y, foo_mot.magnitude " \
             + f"from foo " \
-            + f"LEFT JOIN results.box_motion " \
-            + f"ON foo.box_id=results.box_motion.box_id and foo.model_number=results.box_motion.model_number;"
+            + f"LEFT JOIN foo_mot " \
+            + f"ON foo.box_id=foo_mot.box_id and foo.model_number=foo_mot.model_number;"
         return sql
 
     @RunSql

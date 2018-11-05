@@ -21,6 +21,8 @@ from src.modules.utils.config_loader import get_config
 conf = get_config()
 # ================================================
 
+"""List of workers in the pipeline
+"""
 
 workers_dict = {
     "WriteFramesToVidFiles": WriteFramesToVidFiles,

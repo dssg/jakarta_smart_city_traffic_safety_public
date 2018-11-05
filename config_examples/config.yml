@@ -1,9 +1,18 @@
 visualization:
     path_track_length: 10  # length of paths drawn on frames to ensure motion
-    annotation_font_scale: 1.0  # controls the size of fonts drawn on frames to ensure motion
+    annotation_font_scale: 1.0  # controls the size of fonts drawn on frames
     vid_containers: [".mkv"]  # which file type to use for visualization
     output_extension: ".pdf"  # output format for figures created during visualization
 
 validation:
     iou_threshold: 0.25  # intersection over union threshold. If a true box and label have this value or greater, then they are matched for validation purposes
-    labels_we_test: ['pedestrian','bicycle','car','motorbike','bus','train','truck']  #  the labels output by the model that we want to validate
+    labels_we_test: ['pedestrian','bicycle','car','motorbike','bus','train','truck']  # the labels output by the model that we want to validate
+    other_labels: ['minibus_van_angkot','tuktuk_motortrike_bajaj','food_cart_or_street_vendor']  # labels annotated but not output by the model
+    short_names:  # shorter versions of labels, used in plotting
+        minibus_van_angkot: minibus
+        tuktuk_motortrike_bajaj: tuktuk
+        food_cart_or_street_vendor: food cart
+    confidence_threshold: 0.1  # what is the lowest confidence threshold for which boxes should be validated?
+    disregard_region: 0.5  # validation scripts will drop boxes whose bottom is in top fraction of frame. this sets that fraction
+    model_numbers: [40]  # which models should be validated?
+    minimum_motion: [1,3,10] # values of minimum motion (in pixels) for which to draw histograms of angles

@@ -34,7 +34,7 @@ Once an object is fully annotated, or if you want to not change it temporarily, 
 
 ![Occlusion](occluded.png)
 
-The box around the object will now be drawn with a dashed line. It is important to do this for the first frame when it's occluded, and to uncheck it if the object becomes completely visible again. (Note: "occluded" might mean it is partially out of frame, as above, or it oculd simply be behind something.)
+The box around the object will now be drawn with a dashed line. It is important to do this for the first frame when it's occluded, and to uncheck it if the object becomes completely visible again. (Note: "occluded" might mean it is partially out of frame, as above, or it could simply be behind something.)
 
 **It is important to mark the object as having left the field of view in the first frame you can no longer see it!**
 
