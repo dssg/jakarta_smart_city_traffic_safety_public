@@ -118,7 +118,7 @@ qtconsole==4.3.1
 requests==2.18.4
 requests-kerberos==0.12.0
 roman==2.0.0
-rsa==3.4.2
+rsa==4.1
 s3transfer==0.1.13
 scikit-image==0.14.0
 scikit-learn==0.19.1
