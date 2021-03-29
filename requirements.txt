@@ -98,7 +98,7 @@ pyasn1==0.4.3
 pycparser==2.18
 pydot==1.2.4
 pygal==2.4.0
-Pygments==2.2.0
+Pygments==2.7.4
 PyJWT==1.3.0
 pykerberos==1.2.1
 pylint==1.9.1
