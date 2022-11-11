@@ -106,7 +106,7 @@ pyOpenSSL==18.0.0
 pyparsing==2.2.0
 pyserial==3.0.1
 PySocks==1.6.8
-pyspark==2.2.1
+pyspark==3.2.2
 pytest==3.6.3
 python-dateutil==2.7.3
 pytools==2018.5.2
